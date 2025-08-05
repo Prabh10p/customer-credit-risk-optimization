@@ -26,5 +26,5 @@ if __name__ == "__main__":
         a = 1 / 0
     except Exception as e:  # fixed from `exception` to `Exception`
         logging.info("Divide by zero error")
-        raise CustomException(e, sys)  # fixed from raisecustomeexception to raise CustomException
+        raise CustomException(e, sys)  
 
