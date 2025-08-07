@@ -6,7 +6,7 @@ from src.Exception import CustomException
 from src.logger import logging
 from sklearn.model_selection import train_test_split
 from  dataclasses import dataclass
-
+from src.Components.data_transformation import DataTransformation,DataTrasConfig
 @dataclass
 class DataConfig:
     raw_data_path = os.path.join("Artifacts",'data.csv')
@@ -54,3 +54,5 @@ if __name__ == "__main__":
   train_data,test_data = obj.initiate_ingestion()
           
 
+class1 = DataTransformation()
+train_array,test_array,label__encoder_path,preprocessor_path = class1.initiate_transformation()
