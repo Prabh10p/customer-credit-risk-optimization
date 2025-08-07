@@ -1,9 +1,10 @@
 from dataclasses import dataclass
-import os, sys
+import os
+import sys
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import OneHotEncoder, LabelEncoder, StandardScaler, OrdinalEncoder
+from sklearn.preprocessing import OneHotEncoder, StandardScaler, OrdinalEncoder
 from sklearn.impute import SimpleImputer
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
@@ -14,36 +15,59 @@ from src.logger import logging
 @dataclass
 class DataTrasConfig:
     preprocesor_path = os.path.join("Artifacts", "preprocessor.pkl")
-    label_encoder_path = os.path.join("Artifacts", "label_encoder.pkl")
+    label_mapping_path = os.path.join("Artifacts", "label_mapping.pkl")
 
 class DataTransformation:
     def __init__(self):
         self.trans_path = DataTrasConfig()
 
+    def balance_classes(self, df: pd.DataFrame, target_col: str) -> pd.DataFrame:
+        try:
+            logging.info("Balancing the dataset by upsampling the minority class.")
+            majority = df[df[target_col] == 'N']
+            minority = df[df[target_col] == 'Y']
+            new_minority = minority.sample(len(majority), replace=True, random_state=42)
+            balanced_df = pd.concat([majority, new_minority], axis=0)
+            balanced_df = balanced_df.sample(frac=1, random_state=42).reset_index(drop=True)
+            logging.info(f"Balanced dataset shape: {balanced_df.shape}")
+            return balanced_df
+        except Exception as e:
+            raise CustomException(e, sys)
+
     def initiate_transformation(self):
         try:
             logging.info("Transformation of data started")
-            train = pd.read_csv("Artifacts/train.csv")
+
+            # Load data
+            raw_train = pd.read_csv("Artifacts/train.csv")
             test = pd.read_csv("Artifacts/test.csv")
 
-            X_train = train.iloc[:, :-1]
-            y_train = train.iloc[:, -1]
+            # Balance training data
+            train = self.balance_classes(raw_train, target_col="cb_person_default_on_file")
 
-            X_test = test.iloc[:, :-1]
-            y_test = test.iloc[:, -1]
+            # Separate features and target
+            X_train = train.drop("cb_person_default_on_file", axis=1)
+            y_train = train["cb_person_default_on_file"]
 
-            cat_features = X_train.select_dtypes(include=["object"]).columns.to_list()
+            X_test = test.drop("cb_person_default_on_file", axis=1)
+            y_test = test["cb_person_default_on_file"]
+
+            # Feature categorization
             ordinal_features = ["loan_grade"]
-            num_features = X_train.select_dtypes(exclude=["object"]).columns.to_list()
-
+            cat_features = X_train.select_dtypes(include=["object"]).columns.tolist()
+            num_features = X_train.select_dtypes(exclude=["object"]).columns.tolist()
             cat_features = [col for col in cat_features if col not in ordinal_features]
 
-            le = LabelEncoder()
-            y_train = le.fit_transform(y_train)
-            y_test = le.transform(y_test)
+            # Manual label mapping
+            label_mapping = {'N': 0, 'Y': 1}
+            y_train = y_train.map(label_mapping)
+            y_test = y_test.map(label_mapping)
 
-            save_object(self.trans_path.label_encoder_path, le)
+            # Save the label mapping
+            save_object(self.trans_path.label_mapping_path, label_mapping)
+            logging.info("Label mapping dictionary saved.")
 
+            # Preprocessing pipeline
             preprocessor = ColumnTransformer(
                 transformers=[
                     ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False, drop="first"), cat_features),
@@ -59,18 +83,21 @@ class DataTransformation:
                 ("preprocessor", preprocessor)
             ])
 
+            # Save preprocessing pipeline
             save_object(self.trans_path.preprocesor_path, pipeline)
-            logging.info("Saved preprocessing pipeline.")
+            logging.info("Preprocessing pipeline saved.")
 
+            # Apply transformation
             X_train_processed = pipeline.fit_transform(X_train)
             X_test_processed = pipeline.transform(X_test)
 
+            # Convert to arrays
             train_array = np.array(X_train_processed)
             test_array = np.array(X_test_processed)
 
-            logging.info("Data preprocessing completed successfully.")
+            logging.info("Data transformation completed successfully.")
 
-            return train_array, test_array, self.trans_path.label_encoder_path,self.trans_path.preprocesor_path
+            return train_array, test_array,self.trans_path.label_mapping_path, self.trans_path.preprocesor_path
 
         except Exception as e:
             raise CustomException(e, sys)
