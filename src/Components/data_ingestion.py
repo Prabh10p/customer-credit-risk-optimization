@@ -7,6 +7,7 @@ from src.logger import logging
 from sklearn.model_selection import train_test_split
 from  dataclasses import dataclass
 from src.Components.data_transformation import DataTransformation,DataTrasConfig
+from src.Components.model_trainer import ModelTrainer,ModelTrainerConfig
 @dataclass
 class DataConfig:
     raw_data_path = os.path.join("Artifacts",'data.csv')
@@ -56,3 +57,7 @@ if __name__ == "__main__":
 
 class1 = DataTransformation()
 train_array,test_array,label__encoder_path,preprocessor_path = class1.initiate_transformation()
+
+
+class2 = ModelTrainer()
+best_model, evaluation_report, model_path = class2.initiate_training(train_array, test_array)
