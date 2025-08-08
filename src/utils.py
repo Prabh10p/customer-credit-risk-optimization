@@ -1,6 +1,7 @@
 import os
 import pickle
 import sys
+import numpy as np
 from src.Exception import CustomException
 from sklearn.model_selection import GridSearchCV
 #Evauluation Metrics
@@ -23,6 +24,8 @@ def save_object(file_path, obj):
         raise CustomException(e, sys)
 
 
+from sklearn.preprocessing import LabelBinarizer
+
 def evaluate_model(X_train, X_test, y_train, y_test, models: dict, params: dict):
     try:
         report = {}
@@ -30,6 +33,7 @@ def evaluate_model(X_train, X_test, y_train, y_test, models: dict, params: dict)
         for model_name, model in models.items():
             print("="*60)
             print(f"Evaluating Model: {model_name}")
+
             param_grid = params[model_name]
             grid = GridSearchCV(estimator=model, param_grid=param_grid, cv=3, error_score='raise')
             grid.fit(X_train, y_train)
@@ -39,7 +43,29 @@ def evaluate_model(X_train, X_test, y_train, y_test, models: dict, params: dict)
 
             acc = accuracy_score(y_test, y_pred)
             f1 = f1_score(y_test, y_pred, average='weighted')
-            roc_auc = roc_auc_score(y_test, best_model.predict_proba(X_test)[:,1]) if hasattr(best_model, "predict_proba") else "N/A"
+
+            # ✅ ROC AUC for binary or multiclass
+            if hasattr(best_model, "predict_proba"):
+                y_proba = best_model.predict_proba(X_test)
+
+                try:
+                    if y_proba.shape[1] == 2:
+                        # Binary classification
+                        roc_auc = roc_auc_score(y_test, y_proba[:, 1])
+                    else:
+                        # Multiclass (just in case)
+                        lb = LabelBinarizer()
+                        y_test_binarized = lb.fit_transform(y_test)
+                        roc_auc = roc_auc_score(y_test_binarized, y_proba, average="macro", multi_class="ovr")
+                except Exception as e:
+                    roc_auc = f"ROC AUC Error: {e}"
+            else:
+                roc_auc = "N/A"
+
+            # BEFORE MODEL TRAINING
+            print("Unique classes in y_train:", np.unique(y_train))
+            print("Unique classes in y_test:", np.unique(y_test))
+
 
             print(f"Best CV Score     : {grid.best_score_:.4f}")
             print(f"Best Params       : {grid.best_params_}")
@@ -61,7 +87,6 @@ def evaluate_model(X_train, X_test, y_train, y_test, models: dict, params: dict)
 
     except Exception as e:
         raise CustomException(e, sys)
-    
 
 
 def load_object(file_path):

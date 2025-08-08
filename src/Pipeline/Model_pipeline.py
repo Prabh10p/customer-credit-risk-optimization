@@ -39,7 +39,9 @@ class Pipeline:
 
 
             logging.info("Mapping the predicted label")
-            y_pred = label_mapping.inverse_transform(y_pred)
+            # Assuming the label_mapping is like: {0: "NO DEFAULT", 1: "DEFAULT"}
+            y_pred = [label_mapping.get(int(pred), pred) for pred in y_pred]
+
             logging.info("Mapping the predicted label Done")
 
             return y_pred
@@ -53,40 +55,40 @@ class ModelFeatures:
         self,
         person_age,
         person_income,
-        home_ownership_type,
-        employement_duration,
+        person_home_ownership,       # ✅ Corrected
+        person_emp_length,           # ✅ Corrected
         loan_intent,
         loan_grade,
-        loan_amount,
+        loan_amnt,                   # ✅ Corrected
         loan_int_rate,
         loan_status,
         loan_percent_income,
-        credit_history_duration
+        cb_person_cred_hist_length   # ✅ Corrected
     ):
-        self.data = {
-            "person_age": person_age,
-            "person_income": person_income,
-            "home_ownership_type": home_ownership_type,
-            "employement_duration": employement_duration,
-            "loan_intent": loan_intent,
-            "loan_grade": loan_grade,
-            "loan_amount": loan_amount,
-            "loan_int_rate": loan_int_rate,
-            "loan_status": loan_status,
-            "loan_percent_income": loan_percent_income,
-            "credit_history_duration": credit_history_duration
-        }
+        self.person_age = person_age
+        self.person_income = person_income
+        self.person_home_ownership = person_home_ownership
+        self.person_emp_length = person_emp_length
+        self.loan_intent = loan_intent
+        self.loan_grade = loan_grade
+        self.loan_amnt = loan_amnt
+        self.loan_int_rate = loan_int_rate
+        self.loan_status = loan_status
+        self.loan_percent_income = loan_percent_income
+        self.cb_person_cred_hist_length = cb_person_cred_hist_length
 
     def to_dataframe(self):
-        return pd.DataFrame([self.data])
-
-
-
-
-             
-
-
-
-
-
-
+        data = {
+            'person_age': [self.person_age],
+            'person_income': [self.person_income],
+            'person_home_ownership': [self.person_home_ownership],
+            'person_emp_length': [self.person_emp_length],
+            'loan_intent': [self.loan_intent],
+            'loan_grade': [self.loan_grade],
+            'loan_amnt': [self.loan_amnt],
+            'loan_int_rate': [self.loan_int_rate],
+            'loan_status': [self.loan_status],
+            'loan_percent_income': [self.loan_percent_income],
+            'cb_person_cred_hist_length': [self.cb_person_cred_hist_length]
+        }
+        return pd.DataFrame(data)

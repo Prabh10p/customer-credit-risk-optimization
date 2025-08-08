@@ -94,6 +94,7 @@ class ModelTrainer:
 }
         
         logging.info("Model training Done!")
+        logging.info("Evauluating or Finding Best Model")
 
 
 

@@ -7,4 +7,5 @@ plotly
 pickle
 catboost
 xgboost
+streamlit
 -e .

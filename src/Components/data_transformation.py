@@ -71,7 +71,7 @@ class DataTransformation:
             preprocessor = ColumnTransformer(
                 transformers=[
                     ("onehot", OneHotEncoder(handle_unknown="ignore", sparse_output=False, drop="first"), cat_features),
-                    ("ordinal", OrdinalEncoder(categories=[['A', 'B', 'C', 'D', 'E', 'F', 'G']]), ordinal_features),
+                    ("ordinal", OrdinalEncoder(categories=[["A", "B", "C", "D", "E", "F", "G"]]), ordinal_features),
                     ("num", Pipeline([
                         ("imputer", SimpleImputer(strategy="mean")),
                         ("scaler", StandardScaler())
@@ -83,21 +83,22 @@ class DataTransformation:
                 ("preprocessor", preprocessor)
             ])
 
+            # Fit and transform
+            pipeline.fit(X_train)
+            X_train_processed = pipeline.transform(X_train)
+            X_test_processed = pipeline.transform(X_test)
+
             # Save preprocessing pipeline
             save_object(self.trans_path.preprocesor_path, pipeline)
             logging.info("Preprocessing pipeline saved.")
 
-            # Apply transformation
-            X_train_processed = pipeline.fit_transform(X_train)
-            X_test_processed = pipeline.transform(X_test)
-
-            # Convert to arrays
-            train_array = np.array(X_train_processed)
-            test_array = np.array(X_test_processed)
+            # Combine features and labels
+            train_array = np.c_[X_train_processed, y_train.values]
+            test_array = np.c_[X_test_processed, y_test.values]
 
             logging.info("Data transformation completed successfully.")
 
-            return train_array, test_array,self.trans_path.label_mapping_path, self.trans_path.preprocesor_path
+            return train_array, test_array, self.trans_path.label_mapping_path, self.trans_path.preprocesor_path
 
         except Exception as e:
             raise CustomException(e, sys)
