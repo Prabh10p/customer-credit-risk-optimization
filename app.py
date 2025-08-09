@@ -3,7 +3,7 @@ import pandas as pd
 from src.Pipeline.Model_pipeline import Pipeline, ModelFeatures
 
 # Streamlit Page Config
-st.set_page_config(page_title="Loan Default Predictor", layout="centered")
+st.set_page_config(page_title="Credit Risk–Based Loan Approval System", layout="centered")
 st.title("🏦 Loan Default Prediction App")
 st.markdown("Enter borrower details below to predict whether the loan will default.")
 
@@ -14,14 +14,14 @@ person_home_ownership = st.selectbox("Home Ownership", ["RENT", "OWN", "MORTGAGE
 person_emp_length = st.number_input("Employment Duration (years)", min_value=0.0, max_value=50.0, value=2.0)
 loan_intent = st.selectbox("Loan Intent", ["EDUCATION", "MEDICAL", "VENTURE", "PERSONAL", "HOMEIMPROVEMENT", "DEBTCONSOLIDATION"])
 loan_grade = st.selectbox("Loan Grade", ["A", "B", "C", "D", "E", "F", "G"])
-loan_amnt = st.number_input(" Loan Amount ($)", min_value=0.0, value=5000.0)
+loan_amnt = st.number_input("Loan Amount ($)", min_value=0.0, value=5000.0)
 loan_int_rate = st.number_input("Interest Rate (%)", min_value=0.0, max_value=100.0, value=12.0)
 loan_status = st.selectbox("Loan Status", [0, 1], help="0 = Current, 1 = Default")
 loan_percent_income = st.number_input("Loan % of Income", min_value=0.0, max_value=1.0, value=0.1)
 cb_person_cred_hist_length = st.number_input("Credit History Length (years)", min_value=0.0, value=3.0)
 
 # Predict Button
-if st.button("Predict Loan Default"):
+if st.button("Predict Default"):
     try:
         # Match the exact model feature structure
         features = ModelFeatures(
@@ -44,13 +44,28 @@ if st.button("Predict Loan Default"):
         st.subheader("Input Summary")
         st.write(input_df)
 
-        # Run prediction
         pipeline = Pipeline()
-        prediction = pipeline.MakePipeline(input_df)
+        prediction, probabilities = pipeline.MakePipeline(input_df)
 
-        # Show result
-        st.success(f" **Prediction:** The loan is predicted to be **{'Default' if prediction[0] == 1 else 'Current'}**.")
+# Extract probabilities
+        prob_not_default = round(probabilities[0], 2)
+        prob_default = round(probabilities[1], 2)
+
+# Show probabilities
+        st.write(f"**Probability of loan being paid off successfully:** {prob_not_default}")
+        st.write(f"**Probability of loan defaulting:** {prob_default}")
+
+# Decision + image
+        if prob_default >= 0.50:
+           decision = "❌ Loan Denied – High Risk"
+           st.image("Images/istockphoto-1207262769-612x612.jpg", caption="Loan Denied", use_column_width=True)
+        else:
+          decision = "✅ Loan Approved – Low Risk"
+          st.image("Images/images-7.jpeg", caption="Loan Approved", use_column_width=True)
+
+# Show decision text
+          st.success(f"**Decision:** {decision}")
+
 
     except Exception as e:
-        st.error(f" An error occurred: {str(e)}")
-
+           st.error(f"An error occurred: {str(e)}")
