@@ -59,7 +59,7 @@ class ModelTrainer:
         models = {
     "LogisticRegression": LogisticRegression(solver="saga", penalty="elasticnet", max_iter=10),
     "AdaBoostClassifier": AdaBoostClassifier(),
-    "RandomForestClassifier": RandomForestClassifier(),
+    "RandomForestClassifier": RandomForestClassifier(class_weight="balanced"),
     "CatBoostClassifier": CatBoostClassifier(verbose=0),
     "XGBClassifier": XGBClassifier(eval_metric="logloss", use_label_encoder=False)
 }

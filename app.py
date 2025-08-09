@@ -41,7 +41,7 @@ if st.button("Predict Loan Default"):
         input_df = features.to_dataframe()
 
         # Optional: Show input for verification
-        st.subheader("🔎 Input Summary")
+        st.subheader("Input Summary")
         st.write(input_df)
 
         # Run prediction
@@ -49,8 +49,8 @@ if st.button("Predict Loan Default"):
         prediction = pipeline.MakePipeline(input_df)
 
         # Show result
-        st.success(f"🎯 **Prediction:** The loan is predicted to be **{'Default' if prediction[0] == 1 else 'Current'}**.")
+        st.success(f" **Prediction:** The loan is predicted to be **{'Default' if prediction[0] == 1 else 'Current'}**.")
 
     except Exception as e:
-        st.error(f"❌ An error occurred: {str(e)}")
+        st.error(f" An error occurred: {str(e)}")
 
