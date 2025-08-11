@@ -152,7 +152,7 @@ From the SHAP summary plot:
 
 ## LIME Local Explanation
 <p align="center">
-  <img src="Images/Screenshot 2025-08-11 at 6.21.43 PM.png"" alt="LIME Local Explanation" width="700"/>
+  <img src="Images/Screenshot%202025-08-11%20at%206.21.43%20PM.png" alt="LIME Local Explanation" width="700"/>
   <br>
   <em>LIME local explanation for a single customer instance.</em>
 </p>
