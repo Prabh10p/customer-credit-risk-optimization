@@ -137,10 +137,11 @@ To ensure transparency and trust in our predictions, we used SHAP and LIME to in
 ## SHAP Summary Plot
 
 <p align="center">
-  <img src="/Users/prabhsandhu/Downloads/new4p/Customer-Credit-Risk-Optimization/Images/Screenshot 2025-08-09 at 4.09.25 PM.png" alt="SHAP Summary Plot" width="700"/>
+  <img src="Images/Screenshot%202025-08-09%20at%204.09.25%E2%80%AFPM.png" alt="SHAP Summary Plot" width="700"/>
   <br>
   <em>SHAP summary plot showing feature impact on loan default prediction.</em>
 </p>
+
 
 From the SHAP summary plot:
 - Loan Amount and Person Income are the most influential features in predicting credit risk.
@@ -151,7 +152,7 @@ From the SHAP summary plot:
 
 ## LIME Local Explanation
 <p align="center">
-  <img src="/Users/prabhsandhu/Downloads/new4p/Customer-Credit-Risk-Optimization/Images/Screenshot 2025-08-11 at 6.21.43 PM.png" alt="LIME Local Explanation" width="700"/>
+  <img src="Images/Screenshot 2025-08-11 at 6.21.43 PM.png"" alt="LIME Local Explanation" width="700"/>
   <br>
   <em>LIME local explanation for a single customer instance.</em>
 </p>
