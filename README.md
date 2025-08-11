@@ -5,21 +5,6 @@
 
 
 
-## 📌 **Table of Contents**
-1. [Overview](#Overview)
-2. [Key Features](#key-features)
-3. [Tech Stack](#tech-stack)
-4. [Dataset](#dataset)
-5. [Project Workflow](#project-workflow)
-6. [Exploratory Data Analysis](#exploratory-data-analysis)
-7. [Model Training & Evaluation](#model-training--evaluation)
-8. [Explainability: SHAP & LIME](#explainability-shap--lime)
-9. [Run Project Locally](#)
-10. [Future Improvements](#future-improvements)
-11. [Author](#Author)
-
-
-
 # 1 📌 Overview
 This project is an end-to-end credit risk prediction pipeline that uses machine learning to assess whether a loan applicant is likely to default.
 It combines data preprocessing, EDA, feature engineering, model training, explainable AI (SHAP & LIME), and a Streamlit web app for deployment.
