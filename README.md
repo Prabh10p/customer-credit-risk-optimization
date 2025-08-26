@@ -1,7 +1,7 @@
 # Credit Risk–Based Loan Approval System
 ![Credit Risk Modeling](https://miro.medium.com/v2/resize:fit:1400/1*zy6cELd7h8yxT9XA3sbJvw.png) 
 
-[![Streamlit App](https://img.shields.io/badge/Streamlit-Live_App-brightgreen?logo=streamlit)](https://loan-default-predictor.streamlit.app)  
+[![Streamlit App](https://prabh10p-customer-credit-risk-optimization-app-9kpo1k.streamlit.app/)  
 
 
 
