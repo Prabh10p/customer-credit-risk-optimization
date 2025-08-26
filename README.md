@@ -2,7 +2,7 @@
 ![Credit Risk Modeling](https://miro.medium.com/v2/resize:fit:1400/1*zy6cELd7h8yxT9XA3sbJvw.png) 
 
 ## 🚀 Streamlit Dashboard  
-👉 [Open Streamlit App](https://prabh10p-customer-credit-risk-optimization-app-9kpo1k.streamlit.app/)
+[Open Streamlit App](https://prabh10p-customer-credit-risk-optimization-app-9kpo1k.streamlit.app/)
 
 
 # 1 📌 Overview
