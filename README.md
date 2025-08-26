@@ -3,7 +3,7 @@
 
 ## 🚀 Streamlit Dashboard
 
-You can open the interactive Streamlit dashboard here:  
+## You can open the interactive Streamlit dashboard here:  
 👉 [Open Streamlit App](https://prabh10p-customer-credit-risk-optimization-app-9kpo1k.streamlit.app/)
 
 
